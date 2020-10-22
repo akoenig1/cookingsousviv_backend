@@ -8,10 +8,23 @@ import instaPhotos from './models/instaPhotos';
 
 const app = express();
 
+// Setup CORS white list
+var whitelist = ['http://www.cookingsousviv.com/'];
+var corsOptions = {
+    origin: function(origin, callback) {
+        if(whitelist.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}
+
+
 // Imported middleware //
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Custom middleware //
 // Wait for response from Instagram API requested in instaPhotos model
