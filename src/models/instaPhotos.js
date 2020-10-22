@@ -1,5 +1,6 @@
 import axios from "axios"
 import 'dotenv/config';
+import 'regenerator-runtime';
 
 // Request photo data from Instagram API. Wait for promise to resolve and return result.
 async function getPhotos() {

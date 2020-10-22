@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/routes/index.js"],"names":["instaPhotos"],"mappings":";;;;;;;AAAA;;;;eAEe;AACXA,EAAAA,WAAW,EAAXA;AADW,C","sourcesContent":["import instaPhotos from './instaPhotos';\n\nexport default {\n    instaPhotos,\n};"],"file":"index.js"}
