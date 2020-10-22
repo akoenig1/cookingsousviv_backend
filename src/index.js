@@ -22,9 +22,9 @@ var corsOptions = {
 
 
 // Imported middleware //
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
 
 // Custom middleware //
 // Wait for response from Instagram API requested in instaPhotos model
