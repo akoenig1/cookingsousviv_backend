@@ -21,7 +21,7 @@ async function getPhotos() {
 }
 
 // Call getPhotos asynchronously and assign resolved promise to instaPhotos constant for export
-const instaPhotos = getPhotos()
+const instaPhoto = getPhotos()
     .then(res => {
         return res
     })
@@ -29,4 +29,4 @@ const instaPhotos = getPhotos()
         console.log(err)
     })
 
-export default instaPhotos
+export default instaPhoto
