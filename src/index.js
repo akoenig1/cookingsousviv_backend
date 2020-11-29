@@ -14,7 +14,7 @@ import User from './models/user';
 import bcrypt from 'bcryptjs';
 
 // Setup connection to MongoDB
-const mongoDB = `mongodb+srv://akoenig1:${process.env.MONGO_DB_PW}@cluster0.hhgkn.mongodb.net/<dbname>?retryWrites=true&w=majority`;
+const mongoDB = `mongodb+srv://akoenig1:${process.env.MONGO_DB_PW}@cluster0.hhgkn.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongo Connection Error'));
@@ -100,6 +100,7 @@ app.use(function(req, res, next) {
 
 // Router middleware //
 app.use('/instaPhotos', routes.instaPhotos);
+app.use('/recipes', routes.recipes);
 
 // Run server //
 app.listen(process.env.PORT, () => {
