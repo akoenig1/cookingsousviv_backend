@@ -25,10 +25,7 @@ router.get('/:id/update', recipe_controller.recipe_update_get);
 // POST request to update a recipe
 router.get('/:id/update', recipe_controller.recipe_update_post);
 
-// GET request for all recipes
+// GET request for all recipes. Recipe detail pages rendered in browser
 router.get('/', recipe_controller.recipe_list);
-
-// GET request for one recipe
-router.get('/:id', recipe_controller.recipe_detail);
 
 module.exports = router;

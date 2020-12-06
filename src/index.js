@@ -9,9 +9,10 @@ import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 //import models from './models';
 import routes from './routes';
-import instaPhoto from './models/instaPhoto';
+import updateInstaPhotos from './helpers/updateInstaPhotos';
 import User from './models/user';
 import bcrypt from 'bcryptjs';
+import cron from 'node-cron';
 
 // Setup connection to MongoDB
 const mongoDB = `mongodb+srv://akoenig1:${process.env.MONGO_DB_PW}@cluster0.hhgkn.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`;
@@ -84,11 +85,9 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 // Custom middleware //
-// Wait for response from Instagram API requested in instaPhotos model
-app.use( async (req, res, next) => {
-    req.context = {
-        photos: await instaPhoto,
-    };
+// Check for new instagram photos every 15 minutes
+app.use(async function(req, res, next) {
+    cron.schedule('*/15 * * * *', await updateInstaPhotos(req, res, next) )
     next();
 });
 

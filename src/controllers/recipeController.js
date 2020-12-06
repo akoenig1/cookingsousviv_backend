@@ -34,7 +34,7 @@ exports.recipe_update_post = function(req, res, next) {
 
 // Display list of all recipes
 exports.recipe_list = function(req, res, next) {
-    Recipe.find({}, 'title url')
+    Recipe.find({}, 'title url intro ingredients directions tags')
     //.populate('title')
     .exec(function(err, list_recipes) {
         if(err) {return next(err)}
