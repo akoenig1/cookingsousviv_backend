@@ -9,8 +9,7 @@ var RecipeSchema = new Schema(
         intro: {type: String, required: true},
         ingredients: {type: String, required: true},
         directions: {type: String, required: true},
-        //// Need to link instaPhotos
-        instaPhoto: {},
+        instaPhoto: {type: Schema.Types.ObjectId, ref: 'InstaPhoto'},
         tags: {type: String},
     }, {
         toObject: { virtuals: true },

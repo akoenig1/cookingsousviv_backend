@@ -4,12 +4,35 @@ import async from 'async';
 
 // Display recipe create form on GET
 exports.recipe_create_get = function(req, res, next) {
-
+    // Get all instaPhotos available to add to a recipe
+    InstaPhoto.find(callback)
+    .exec(function(err, instaPhotos) {
+        if(err) { return next(err); }
+        res.send({ title: 'Add Recipe', instaPhotoList: instaPhotos });
+    });
 };
 
 // Handle recipe create on POST
 exports.recipe_create_post = function(req, res, next) {
+    console.log(req)
 
+    // Create a recipe object
+    var recipe = new Recipe(
+        {
+            title: req.body.title,
+            intro: req.body.intro,
+            ingredients: req.body.ingredients,
+            directions: req.body.directions,
+            tags: req.body.tags
+        }
+    );
+
+    // Save recipe in databse
+    recipe.save(function(err) {
+        if(err) { return next(err); }
+        // Successful, so redirect to book page
+        res.send(recipe.url);
+    });
 };
 
 // Display recipe delete form on GET
@@ -54,7 +77,6 @@ exports.recipe_detail = function(req, res, next) {
             return next(err);
         }
         //Successful, so send to frontend
-        ///// NEED TO ADD IN INSTAPHOTO WHEN MODELS ARE LINKED /////
-        res.send({title: recipe.title, intro: recipe.intro, ingredients: recipe.ingredients, directions: recipe.directions, /*instaPhoto: recipe.instaPhoto,*/ tags: recipe.tags });
+        res.send({title: recipe.title, intro: recipe.intro, ingredients: recipe.ingredients, directions: recipe.directions, instaPhoto: recipe.instaPhoto, tags: recipe.tags });
     });
 };
