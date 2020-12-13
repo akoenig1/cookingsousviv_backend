@@ -1,4 +1,5 @@
 import Recipe from '../models/recipe';
+import InstaPhoto from '../models/instaPhoto';
 //import validator from 'express-validator';
 import async from 'async';
 
@@ -37,12 +38,24 @@ exports.recipe_create_post = function(req, res, next) {
 
 // Display recipe delete form on GET
 exports.recipe_delete_get = function(req, res, next) {
-
+    // Find instaPhotos associated with this recipe so association can be removed
+    InstaPhoto.find(callback)
+    .exec(function(err, instaPhotos) {
+        if(err) { return next(err); }
+        res.send({ title: 'Add Recipe', instaPhotoList: instaPhotos });
+    });
 };
 
 // Handle recipe delete on POST
-exports.recipe_delete_post = function(req, res, next) {
-
+exports.recipe_delete_post = async function(req, res, next) {
+    const recipe_title = req.body.title
+    Recipe.find( {title: recipe_title} ).exec()
+    .then( (results) => {
+        Recipe.findByIdAndRemove(results[0]._id, function deleteRecipe(err) {
+            if(err) {return next(err)}
+            res.send(`Successfully deleted post: ${recipe_title}`)
+        });
+    });
 };
 
 // Display recipe update form on GET
@@ -63,20 +76,5 @@ exports.recipe_list = function(req, res, next) {
         if(err) {return next(err)}
         //Successful, so send to frontend
         res.send({title: 'Recipes', recipe_list: list_recipes});
-    });
-};
-
-// Display details page of one recipe
-exports.recipe_detail = function(req, res, next) {
-    Recipe.findById(req.params.id)
-    .exec(function(err, recipe) {
-        if(err) { return next(err) }
-        if(recipe==null) { //No results
-            var err = new Error('Recipe not found');
-            err.status = 404;
-            return next(err);
-        }
-        //Successful, so send to frontend
-        res.send({title: recipe.title, intro: recipe.intro, ingredients: recipe.ingredients, directions: recipe.directions, instaPhoto: recipe.instaPhoto, tags: recipe.tags });
     });
 };
