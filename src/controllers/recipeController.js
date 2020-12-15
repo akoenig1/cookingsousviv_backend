@@ -15,8 +15,6 @@ exports.recipe_create_get = function(req, res, next) {
 
 // Handle recipe create on POST
 exports.recipe_create_post = function(req, res, next) {
-    console.log(req)
-
     // Create a recipe object
     var recipe = new Recipe(
         {
@@ -58,14 +56,20 @@ exports.recipe_delete_post = async function(req, res, next) {
     });
 };
 
-// Display recipe update form on GET
-exports.recipe_update_get = function(req, res, next) {
-
-};
-
 // Handle recipe update form on POST
 exports.recipe_update_post = function(req, res, next) {
+    // Find recipe object to update
+    const recipe_id = req.body.id;
 
+    Recipe.findByIdAndUpdate(recipe_id, {$set:req.body}, (err) => {
+        if(err) {return next(err)}
+    }).exec()
+    .then(
+        Recipe.findById(recipe_id).exec()
+        .then( (result) => {
+            res.send(result.url)
+        })
+    );
 };
 
 // Display list of all recipes

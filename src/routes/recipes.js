@@ -19,9 +19,6 @@ router.get('/:id/delete', recipe_controller.recipe_delete_get);
 // POST request to delete a recipe
 router.post('/:id/delete', recipe_controller.recipe_delete_post);
 
-// GET request to update a recipe
-router.get('/:id/update', recipe_controller.recipe_update_get);
-
 // POST request to update a recipe
 router.post('/:id/update', recipe_controller.recipe_update_post);
 
