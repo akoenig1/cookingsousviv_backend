@@ -1,13 +1,20 @@
 import mongoose from 'mongoose';
+import { stringify } from 'uuid';
+import findOrCreate from "mongoose-findorcreate"
 
 const Schema = mongoose.Schema;
+const userSchema = new Schema ({
+    id: { type: String, required: true },
+    email: { type: String, required: true },
+    name: { type: String, required: true },
+    imageUrl: { type: String },
+    admin: { type: Boolean, required: true },
+    comments: [{ type: String }],
+    likes: [{ type: Boolean }]
+})
 
-const User = mongoose.model(
-    "User",
-    new Schema ({
-        username: { type: String, required: true },
-        password: { type: String, required: true }
-    })
-);
+userSchema.plugin(findOrCreate);
+
+const User = new mongoose.model("User", userSchema);
 
 export default User;

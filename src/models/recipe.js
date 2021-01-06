@@ -11,6 +11,8 @@ var RecipeSchema = new Schema(
         directions: {type: String, required: true},
         instaPhoto: {type: Schema.Types.ObjectId, ref: 'InstaPhoto'},
         tags: {type: String},
+        comments: [{type: String}],
+        likes: [{type: Schema.Types.ObjectId, ref: 'User'}]
     }, {
         toObject: { virtuals: true },
         toJSON: { virtuals: true }

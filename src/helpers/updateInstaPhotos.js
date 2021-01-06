@@ -25,18 +25,20 @@ async function updateInstaPhotos(req, res, next) {
                 //tags: req.body.id,
             }
         )
-        InstaPhoto.exists({ id: instaPhoto.id })
-        .then(exists => {
-            if(!exists) {
-                instaPhoto.save(function(err) {
-                    if(err) { return next(err); }
-                });
-            }
-        })
-        .catch(err => {
-            console.log(err);
+        InstaPhoto.findOneAndUpdate(
+            {id: instaPhoto.id}, 
+            {
+                caption: instaPhoto.caption,
+                media_type: instaPhoto.media_type,
+                media_url: instaPhoto.media_url,
+                permalink: instaPhoto.permalink,
+                thumbnail_url: instaPhoto.thumbnail_url,
+                timestamp: instaPhoto.timestamp,
+            }, 
+            {upsert: true}, 
+            (err) => {
+            if(err) {return next(err); }
         });
-
     });
 };
 

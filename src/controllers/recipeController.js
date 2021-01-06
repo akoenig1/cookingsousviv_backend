@@ -1,7 +1,5 @@
 import Recipe from '../models/recipe';
 import InstaPhoto from '../models/instaPhoto';
-//import validator from 'express-validator';
-import async from 'async';
 
 // Display recipe create form on GET
 exports.recipe_create_get = function(req, res, next) {
