@@ -29,11 +29,6 @@ router.get('/google/redirect', passport.authenticate("google",
                         process.env.JWT_SECRET, 
                         {expiresIn: '1h'}
                     )
-                    console.log(req.user)
-                    console.log(req.session)
-                    console.log(req.isAuthenticated())
-                    console.log(token)
-                    // res.redirect('/auth/check')
                     res.header('Authorization', token).redirect(`${KEYS.HOME_PAGE_URL}`)
                 } catch(err) {
                     console.log(err);

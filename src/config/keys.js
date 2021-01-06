@@ -13,7 +13,7 @@ const MONGO_DB = {
 }
 
 const SESSION = {
-    COOKIE_KEY: 'cookiemonster'
+    SESSION_SECRET: process.env.SESSION_SECRET
 }
 
 const CLIENT = {

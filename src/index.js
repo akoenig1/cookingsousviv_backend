@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
@@ -53,7 +55,7 @@ app.use(cors());
 
 // Passport Setup
 app.use(session({ 
-    secret: 'cookiemonster', 
+    secret: KEYS.SESSION_SECRET, 
     resave: true, 
     saveUninitialized: true,
     cookie: {

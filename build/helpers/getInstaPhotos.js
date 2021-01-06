@@ -18,13 +18,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 // Request photo data from Instagram API. Wait for promise to resolve and return result.
-function getPhotos() {
-  return _getPhotos.apply(this, arguments);
-} // Call getPhotos asynchronously and assign resolved promise to instaPhotos constant for export
+function getInstaPhotos() {
+  return _getInstaPhotos.apply(this, arguments);
+}
 
-
-function _getPhotos() {
-  _getPhotos = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+function _getInstaPhotos() {
+  _getInstaPhotos = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
     var fields, user_id, token, photo_limit, photos;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -52,14 +51,9 @@ function _getPhotos() {
       }
     }, _callee);
   }));
-  return _getPhotos.apply(this, arguments);
+  return _getInstaPhotos.apply(this, arguments);
 }
 
-var instaPhotos = getPhotos().then(function (res) {
-  return res;
-})["catch"](function (err) {
-  console.log(err);
-});
-var _default = instaPhotos;
+var _default = getInstaPhotos;
 exports["default"] = _default;
-//# sourceMappingURL=instaPhotos.js.map
+//# sourceMappingURL=getInstaPhotos.js.map
