@@ -4,8 +4,8 @@ import 'regenerator-runtime/runtime';
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
-import passport from 'passport';
-import passportSetup from './config/passport-setup';
+// import passport from 'passport';
+// import passportSetup from './config/passport-setup';
 import cookieParser from 'cookie-parser'
 import keys from './config/keys'
 import mongoose from 'mongoose';
@@ -23,7 +23,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongo Connection Error'));
 
 // Setup CORS white list
-var whitelist = ['http://www.cookingsousviv.com/'];
+var whitelist = ['http://www.cookingsousviv.com/', 'http://localhost:3000'];
 var corsOptions = {
     origin: function(origin, callback) {
         if(whitelist.indexOf(origin) !== -1) {
@@ -36,34 +36,35 @@ var corsOptions = {
 
 const app = express();
 
-
 // Imported middleware //
 // Express setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 // CORS Setup
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", '*');
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,Authorization,content-type,application/json');
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", '*');
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.setHeader("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Accept,Authorization,content-type,application/json');
     next();
 });
 app.use(cors());
 
 // Passport Setup
-app.use(session({ 
-    secret: KEYS.SESSION_SECRET, 
-    resave: true, 
-    saveUninitialized: true,
-    cookie: {
-        secure: false
-    }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(session({ 
+//     secret: KEYS.SESSION_SECRET, 
+//     resave: true, 
+//     saveUninitialized: true,
+//     cookie: {
+//         sameSite: 'none',
+//         secure: true
+//     }
+// }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 
 // Custom middleware //

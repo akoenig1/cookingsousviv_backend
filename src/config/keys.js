@@ -16,6 +16,10 @@ const SESSION = {
     SESSION_SECRET: process.env.SESSION_SECRET
 }
 
+const JWT = {
+    JWT_SECRET: process.env.JWT_SECRET
+}
+
 const CLIENT = {
     HOME_PAGE_URL:  (process.env.NODE_ENV === 'development')
                     ? 'http://localhost:3000'
@@ -32,6 +36,7 @@ const KEYS = {
     ...GOOGLE_TOKENS,
     ...MONGO_DB,
     ...SESSION,
+    ...JWT,
     ...CLIENT,
     ...SERVER
 }

@@ -12,9 +12,9 @@ exports.recipe_create_get = function(req, res, next) {
 };
 
 // Handle recipe create on POST
-exports.recipe_create_post = function(req, res, next) {
+exports.recipe_create_post = async function(req, res, next) {
     // Create a recipe object
-    var recipe = new Recipe(
+    const recipe = new Recipe(
         {
             title: req.body.title,
             intro: req.body.intro,
@@ -27,18 +27,8 @@ exports.recipe_create_post = function(req, res, next) {
     // Save recipe in databse
     recipe.save(function(err) {
         if(err) { return next(err); }
-        // Successful, so redirect to book page
-        res.send(recipe.url);
-    });
-};
-
-// Display recipe delete form on GET
-exports.recipe_delete_get = function(req, res, next) {
-    // Find instaPhotos associated with this recipe so association can be removed
-    InstaPhoto.find(callback)
-    .exec(function(err, instaPhotos) {
-        if(err) { return next(err); }
-        res.send({ title: 'Add Recipe', instaPhotoList: instaPhotos });
+        // Successful, so redirect to new recipe page
+        res.json( {url: recipe.url} );
     });
 };
 
@@ -49,7 +39,7 @@ exports.recipe_delete_post = async function(req, res, next) {
     .then( (results) => {
         Recipe.findByIdAndRemove(results[0]._id, function deleteRecipe(err) {
             if(err) {return next(err)}
-            res.send(`Successfully deleted post: ${recipe_title}`)
+            res.json(`Successfully deleted post: ${recipe_title}`)
         });
     });
 };
@@ -65,7 +55,7 @@ exports.recipe_update_post = function(req, res, next) {
     .then(
         Recipe.findById(recipe_id).exec()
         .then( (result) => {
-            res.send(result.url)
+            res.json( {url: result.url} )
         })
     );
 };

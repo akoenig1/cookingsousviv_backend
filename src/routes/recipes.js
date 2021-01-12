@@ -14,13 +14,10 @@ router.get('/', recipe_controller.recipe_list);
 router.use(checkAuth); 
 
 // GET request to create a new recipe
-router.get('/create', checkAuth, recipe_controller.recipe_create_get);
+router.get('/create', recipe_controller.recipe_create_get);
 
 // POST request to create a new recipe
 router.post('/create', recipe_controller.recipe_create_post);
-
-// GET request to delete a recipe
-router.get('/:id/delete', recipe_controller.recipe_delete_get);
 
 // POST request to delete a recipe
 router.post('/:id/delete', recipe_controller.recipe_delete_post);
