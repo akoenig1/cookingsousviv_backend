@@ -12,12 +12,13 @@
     "build": "npm run clean && npm run build-babel"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/node": "^7.12.10",
-    "@babel/preset-env": "^7.12.11"
+    
   },
   "dependencies": {
     "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
     "axios": "^0.21.1",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.8.2",
