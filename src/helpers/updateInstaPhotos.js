@@ -1,7 +1,7 @@
 import getInstaPhotos from './getInstaPhotos';
 import InstaPhoto from '../models/instaPhoto'
 
-// Call instaPhotoGetter asynchronously and save received values to mongoose database
+// Call updateInstaPhotos asynchronously and save new entry to mongoose database
 async function updateInstaPhotos(req, res, next) {
     let photos = await getInstaPhotos()
                 .then(res => {
@@ -37,8 +37,9 @@ async function updateInstaPhotos(req, res, next) {
             }, 
             {upsert: true}, 
             (err) => {
-            if(err) {return next(err); }
-        });
+                if(err) {return next(err); }
+            }
+        );
     });
 };
 

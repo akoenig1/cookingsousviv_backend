@@ -52,8 +52,10 @@ app.use(cors());
 
 // Custom middleware //
 // Check for new instagram photos every 15 minutes
-app.use(async function(req, res, next) {
-    cron.schedule('*/15 * * * *', await updateInstaPhotos(req, res, next) )
+app.use(function(req, res, next) {
+    cron.schedule('*/15 * * * *', async (req, res, next) => {
+        await updateInstaPhotos(req, res, next)
+    })
     next();
 });
 
