@@ -25,6 +25,4 @@ router.post('/:id/delete', recipe_controller.recipe_delete_post);
 // POST request to update a recipe
 router.post('/:id/update', recipe_controller.recipe_update_post);
 
-
-
 module.exports = router;

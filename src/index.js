@@ -2,19 +2,15 @@ import 'dotenv/config';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import express from 'express';
-import path from 'path';
-import session from 'express-session';
-// import passport from 'passport';
-// import passportSetup from './config/passport-setup';
+import path from 'path'; //eslint-ignore-line no-unused-vars
 import cookieParser from 'cookie-parser'
 import keys from './config/keys'
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'; //eslint-ignore-line no-unused-vars
 import routes from './routes';
 import updateInstaPhotos from './helpers/updateInstaPhotos';
 import cron from 'node-cron';
-import KEYS from './config/keys'
 
 // Setup connection to MongoDB
 const mongoDB = keys.MONGO_DB_URI
@@ -36,12 +32,12 @@ var corsOptions = {
 
 const app = express();
 
+
 // Imported middleware //
 // Express setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 
 // CORS Setup
 app.use((req, res, next) => {
@@ -52,19 +48,6 @@ app.use((req, res, next) => {
     next();
 });
 app.use(cors());
-
-// Passport Setup
-// app.use(session({ 
-//     secret: KEYS.SESSION_SECRET, 
-//     resave: true, 
-//     saveUninitialized: true,
-//     cookie: {
-//         sameSite: 'none',
-//         secure: true
-//     }
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 
 // Custom middleware //

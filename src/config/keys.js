@@ -12,10 +12,6 @@ const MONGO_DB = {
     MONGO_DB_URI: `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.hhgkn.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
 }
 
-const SESSION = {
-    SESSION_SECRET: process.env.SESSION_SECRET
-}
-
 const JWT = {
     JWT_SECRET: process.env.JWT_SECRET
 }
@@ -35,7 +31,6 @@ const SERVER = {
 const KEYS = {
     ...GOOGLE_TOKENS,
     ...MONGO_DB,
-    ...SESSION,
     ...JWT,
     ...CLIENT,
     ...SERVER
