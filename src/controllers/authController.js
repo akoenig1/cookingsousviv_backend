@@ -10,7 +10,7 @@ exports.logout = function(req, res) {
     res.redirect(`${KEYS.HOME_PAGE_URL}`)
 }
 
-exports.google_auth = (req, res) => {
+exports.googleAuth = (req, res) => {
     const {tokenId} = req.body;
     client.verifyIdToken({idToken: tokenId, audience: KEYS.GOOGLE_ID})
     .then(result => {

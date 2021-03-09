@@ -2,7 +2,7 @@ import Recipe from '../models/recipe';
 import InstaPhoto from '../models/instaPhoto';
 
 // Display recipe create form on GET
-exports.recipe_create_get = function(req, res, next) {
+exports.getCreateRecipe = function(req, res, next) {
     // Get all instaPhotos available to add to a recipe
     InstaPhoto.find(callback)
     .exec(function(err, instaPhotos) {
@@ -12,7 +12,7 @@ exports.recipe_create_get = function(req, res, next) {
 };
 
 // Handle recipe create on POST
-exports.recipe_create_post = async function(req, res, next) {
+exports.createRecipe = async function(req, res, next) {
     // Create a recipe object
     const recipe = new Recipe(
         {
@@ -34,7 +34,7 @@ exports.recipe_create_post = async function(req, res, next) {
 };
 
 // Handle recipe delete on POST
-exports.recipe_delete_post = async function(req, res, next) {
+exports.deleteRecipe = async function(req, res, next) {
     const recipe_title = req.body.title
     Recipe.find( {title: recipe_title} ).exec()
     .then( (results) => {
@@ -46,7 +46,7 @@ exports.recipe_delete_post = async function(req, res, next) {
 };
 
 // Handle recipe update form on POST
-exports.recipe_update_post = function(req, res, next) {
+exports.updateRecipe = function(req, res, next) {
     // Find recipe object to update
     const recipe_id = req.body.id;
 
@@ -62,7 +62,7 @@ exports.recipe_update_post = function(req, res, next) {
 };
 
 // Display list of all recipes
-exports.recipe_list = function(req, res, next) {
+exports.getRecipes = function(req, res, next) {
     Recipe.find({}, 'title url intro ingredients directions instaPhoto tags')
     .populate('instaPhoto')
     .exec(function(err, list_recipes) {

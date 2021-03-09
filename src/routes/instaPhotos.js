@@ -1,9 +1,12 @@
 import { Router } from  'express';
 const router = Router();
-import instaPhoto_controller from '../controllers/instaPhotoController';
 
-router.get('/', instaPhoto_controller.instaPhoto_get_all);
+import {
+  getInstaPhotos,
+  getInstaPhoto,
+} from '../controllers/instaPhotoController';
 
-router.get('/:id', instaPhoto_controller.instaPhoto_get);
+router.route('/').get(getInstaPhotos);
+router.route('/:id').get(getInstaPhoto);
 
 export default router;

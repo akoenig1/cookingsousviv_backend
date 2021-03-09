@@ -1,11 +1,13 @@
 import "dotenv/config"
 import { Router } from  'express'
-import authController from "../controllers/authController"
-
 const router = Router();
 
-router.get('/logout', authController.logout)
+import {
+  logout,
+  googleAuth,
+} from "../controllers/authController"
 
-router.post('/google', authController.google_auth)
+router.route('/logout').get(logout);
+router.route('/google').post(googleAuth);
 
 export default router;
