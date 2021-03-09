@@ -20,7 +20,8 @@ exports.recipe_create_post = async function(req, res, next) {
             intro: req.body.intro,
             ingredients: req.body.ingredients,
             directions: req.body.directions,
-            tags: req.body.tags
+            tags: req.body.tags,
+            instaPhoto: req.body.photo._id
         }
     );
 
@@ -62,8 +63,8 @@ exports.recipe_update_post = function(req, res, next) {
 
 // Display list of all recipes
 exports.recipe_list = function(req, res, next) {
-    Recipe.find({}, 'title url intro ingredients directions tags')
-    //.populate('title')
+    Recipe.find({}, 'title url intro ingredients directions instaPhoto tags')
+    .populate('instaPhoto')
     .exec(function(err, list_recipes) {
         if(err) {return next(err)}
         //Successful, so send to frontend
