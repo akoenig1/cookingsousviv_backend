@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import urlStringify from '../helpers/urlStringify';
+import urlStringify from '../utils/urlStringify';
 
 const Schema = mongoose.Schema;
 const RecipeSchema = new Schema(

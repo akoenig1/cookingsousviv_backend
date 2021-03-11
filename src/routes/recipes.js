@@ -1,4 +1,4 @@
-import checkAuth from '../helpers/check-auth';
+import checkAuth from '../middlewares/check-auth';
 import { Router } from 'express';
 const router = Router();
 
