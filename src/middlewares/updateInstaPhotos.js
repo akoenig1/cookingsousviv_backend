@@ -11,7 +11,7 @@ async function updateInstaPhotos(req, res, next) {
                 console.log(err)
               });
 
-  if(photos) {
+  if(photos != undefined) {
     photos.forEach(photo => {
       var instaPhoto = new InstaPhoto(
         {
