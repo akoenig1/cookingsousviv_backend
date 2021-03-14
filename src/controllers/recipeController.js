@@ -1,18 +1,22 @@
-import Recipe from '../models/recipe';
+import Comment from '../models/comment';
 import InstaPhoto from '../models/instaPhoto';
+import Recipe from '../models/recipe';
+import User from '../models/user';
+import asyncHandler from '../middlewares/asyncHandler';
+import e from 'express';
 
 // Display recipe create form on GET
-exports.getCreateRecipe = function(req, res, next) {
+exports.getCreateRecipe = asyncHandler(async (req, res, next) => {
   // Get all instaPhotos available to add to a recipe
-  InstaPhoto.find(callback)
+  await InstaPhoto.find(callback)
   .exec(function(err, instaPhotos) {
     if(err) { return next(err); }
-    res.send({ title: 'Add Recipe', instaPhotoList: instaPhotos });
+    res.status(200).send({ title: 'Add Recipe', instaPhotoList: instaPhotos });
   });
-};
+});
 
 // Handle recipe create on POST
-exports.createRecipe = async function(req, res, next) {
+exports.createRecipe = asyncHandler (async (req, res, next) => {
   // Create a recipe object
   const recipe = new Recipe(
     {
@@ -26,48 +30,192 @@ exports.createRecipe = async function(req, res, next) {
   );
 
   // Save recipe in databse
-  recipe.save(function(err) {
+  await recipe.save(function(err) {
     if(err) { return next(err); }
     // Successful, so redirect to new recipe page
-    res.json( {url: recipe.url} );
+    res.status(200).json( {url: recipe.url} );
   });
-};
+});
 
 // Handle recipe delete on POST
-exports.deleteRecipe = async function(req, res, next) {
+exports.deleteRecipe = asyncHandler (async (req, res, next) => {
   const recipe_title = req.body.title
-  Recipe.find( {title: recipe_title} ).exec()
-  .then( (results) => {
-    Recipe.findByIdAndRemove(results[0]._id, function deleteRecipe(err) {
+  await Recipe.find( {title: recipe_title} ).exec()
+  .then( asyncHandler (async (results) => {
+    await Recipe.findByIdAndRemove(results[0]._id, function deleteRecipe(err) {
       if(err) {return next(err)}
-      res.json(`Successfully deleted post: ${recipe_title}`)
+      res.status(200).json(`Successfully deleted post: ${recipe_title}`)
     });
-  });
-};
+  }));
+});
 
 // Handle recipe update form on POST
-exports.updateRecipe = function(req, res, next) {
+exports.updateRecipe = asyncHandler (async (req, res, next) => {
   // Find recipe object to update
   const recipe_id = req.body.id;
 
-  Recipe.findByIdAndUpdate(recipe_id, {$set:req.body}, (err) => {
+  await Recipe.findByIdAndUpdate(recipe_id, {$set:req.body}, (err) => {
     if(err) {return next(err)}
   }).exec()
   .then(
     Recipe.findById(recipe_id).exec()
     .then( (result) => {
-      res.json( {url: result.url} )
+      res.status(200).json( {url: result.url} )
     })
   );
-};
+});
 
 // Display list of all recipes
-exports.getRecipes = function(req, res, next) {
-  Recipe.find({}, 'title url intro ingredients directions instaPhoto tags')
+exports.getRecipes = asyncHandler (async (req, res, next) => {
+  await Recipe.find({}, 'title url intro ingredients directions instaPhoto tags')
   .populate('instaPhoto')
   .exec(function(err, list_recipes) {
     if(err) {return next(err)}
     //Successful, so send to frontend
-    res.send({title: 'Recipes', recipe_list: list_recipes});
+    res.status(200).send({title: 'Recipes', recipe_list: list_recipes});
   });
-};
+});
+
+// Display a single recipe
+exports.getRecipe = asyncHandler (async (req, res, next) => {
+  const recipe = await Recipe.findById(req.params.id)
+    .populate({
+      path: 'comments',
+      select: 'comment author',
+    })
+    .lean()
+    .exec();
+
+  if(!recipe) {
+    return next({
+      message: `No recipe found for id ${req.params.id}`,
+      statusCode: 404,
+    });
+  }
+
+  // Is there a logged in user?
+  if(req.userData) {
+    // Did the logged in user like this recipe?
+    const likes = recipe.likes.map((like) => like.toString());
+    recipe.isLiked = likes.includes(req.userData.id);
+    
+    // Did the logged in user comment on this recipe?
+    recipe.comments.forEach((comment) => {
+      comment.isCommentMine = false;
+
+      const userStr = comment.user._id.toString();
+      if(userStr === req.userData.id) {
+        comment.isCommentMine = true;
+      }
+    });
+  }
+
+  res.status(200).json({ success: true, data: recipe });
+})
+
+exports.toggleLike = asyncHandler(async (req, res, next) => {
+  const recipe = await Recipe.findById(req.params.id);
+
+  // Check that recipe exists
+  if(!recipe) {
+    return next({
+      message: `No recipe found for id ${req.params.id}`,
+      statusCode: 404,
+    });
+  }
+
+  // Check that a user is logged in
+  if(!userData) {
+    return next({
+      message: `You must be logged in to like a post`,
+      statusCode: 404,
+    })
+  }
+
+  // Toggle like
+  if(recipe.likes.includes(req.userData.id)) {
+    const index = recipe.likes.indexOf(req.userData.id);
+    recipe.likes.splice(index, 1);
+    recipe.likesCount -= 1;
+    await recipe.save();
+  } else {
+    recipe.likes.push(req.userData.id);
+    recipe.likesCount += 1;
+    await recipe.save();
+  }
+
+  res.status(200).json({ success: true, data: {} });
+});
+
+exports.addComment = asyncHandler(async (req, res, next) => {
+  const recipe = await Recipe.findById(req.params.id);
+
+  // Check that recipe exists
+  if(!recipe) {
+    return next({
+      message: `No recipe found for id ${req.params.id}`,
+      statusCode: 404,
+    });
+  }
+
+  // Create comment for logged in user author
+  if(userData) {
+    let comment = await Comment.create({
+      userAuthor: req.userData.id,
+      recipe: req.params.id,
+      comment: req.body.comment,
+    })
+  // Create comment for guest author
+  } else {
+    let comment = await Comment.create({
+      guestAuthor: req.body.author,
+      recipe: req.params.id,
+      comment: req.body.comment,
+    })
+  }
+
+  recipe.comments.push(comment._id);
+  recipe.commentsCount += 1;
+  await recipe.save();
+  
+  res.status(200).json({ success: true, data: comment });
+})
+
+exports.deleteComment = asyncHandler(async (req, res, next) => {
+  const recipe = await Recipe.findById(req.params.id);
+
+  if(!recipe) {
+    return next({
+      message: `No recipe found for id ${req.params.id}`,
+      statusCode: 404,
+    });
+  }
+
+  const comment = await Comment.findOne({
+    _id: req.params.commentId,
+    recipe: req.params.id,
+  });
+
+  if(!comment) {
+    return next({
+      message: `No comment found for id ${req.params.id}`,
+      statusCode: 404,
+    });
+  }
+
+  if(comment.user.toString !== req.user.id) {
+    return next({
+      message: 'You are not authorized to delete this comment',
+      statusCode: 401,
+    });
+  }
+
+  const index = recipe.comments.indexOf(comment._id);
+  recipe.comments.splice(index, 1);
+  recipe.commentsCount -= 1;
+  await recipe.save();
+
+  await comment.remove();
+
+  res.status(200).json({ success: true, data: {} });
+})

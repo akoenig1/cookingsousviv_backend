@@ -7,9 +7,11 @@ const CommentSchema = new Schema(
       type: String, 
       required: true,
     },
-    author: {
+    guestAuthor: {
       type: String, 
-      required: true,
+    },
+    userAuthor: {
+      type: Schema.Types.ObjectId,
     },
     recipe: {
       type: Schema.Types.ObjectId, 
