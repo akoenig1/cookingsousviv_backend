@@ -12,6 +12,7 @@ const CommentSchema = new Schema(
     },
     userAuthor: {
       type: Schema.Types.ObjectId,
+      ref: 'User',
     },
     recipe: {
       type: Schema.Types.ObjectId, 

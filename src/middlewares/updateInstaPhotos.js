@@ -5,6 +5,7 @@ import InstaPhoto from '../models/instaPhoto'
 async function updateInstaPhotos(req, res, next) {
   let photos = await getInstaPhotos()
               .then(res => {
+                console.log(res);
                 return res
               })
               .catch(err => {
@@ -35,7 +36,7 @@ async function updateInstaPhotos(req, res, next) {
           thumbnail_url: instaPhoto.thumbnail_url,
           timestamp: instaPhoto.timestamp,
         }, 
-        {upsert: true}, 
+        {upsert: true},
         (err) => {
           if(err) {return next(err); }
         }

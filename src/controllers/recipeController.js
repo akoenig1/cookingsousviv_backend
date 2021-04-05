@@ -81,7 +81,7 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id)
     .populate({
       path: 'comments',
-      select: 'comment author',
+      select: 'comment userAuthor guestAuthor',
     })
     .lean()
     .exec();
@@ -148,7 +148,11 @@ exports.toggleLike = asyncHandler(async (req, res, next) => {
 });
 
 exports.addComment = asyncHandler(async (req, res, next) => {
+  console.log(req.body.user);
+  console.log(req.params);
+  console.log(req.body.comment);
   const recipe = await Recipe.findById(req.params.id);
+  const user = req.body.user
 
   // Check that recipe exists
   if(!recipe) {
@@ -159,26 +163,30 @@ exports.addComment = asyncHandler(async (req, res, next) => {
   }
 
   // Create comment for logged in user author
-  if(userData) {
-    let comment = await Comment.create({
-      userAuthor: req.userData.id,
+  if(user) {
+    var newComment = await Comment.create({
+      userAuthor: req.body.user,
       recipe: req.params.id,
       comment: req.body.comment,
-    })
+    });
   // Create comment for guest author
   } else {
-    let comment = await Comment.create({
+    var newComment = await Comment.create({
       guestAuthor: req.body.author,
       recipe: req.params.id,
       comment: req.body.comment,
-    })
+    });
   }
 
-  recipe.comments.push(comment._id);
+  recipe.comments.push(newComment._id);
   recipe.commentsCount += 1;
   await recipe.save();
+
+  newComment = await newComment
+    .populate({ path: 'user', select: 'userAuthor guestAuthor' })
+    .execPopulate();
   
-  res.status(200).json({ success: true, data: comment });
+  res.status(200).json({ success: true, data: newComment });
 })
 
 exports.deleteComment = asyncHandler(async (req, res, next) => {
