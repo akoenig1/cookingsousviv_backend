@@ -152,7 +152,7 @@ exports.toggleLike = asyncHandler(async (req, res, next) => {
 
 exports.addComment = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
-  const user = req.body.user
+  const registeredUser = req.body.registeredUser;
 
   // Check that recipe exists
   if(!recipe) {
@@ -163,16 +163,16 @@ exports.addComment = asyncHandler(async (req, res, next) => {
   }
 
   // Create comment for logged in user author
-  if(user) {
+  if(registeredUser) {
     var newComment = await Comment.create({
-      userAuthor: req.body.user,
+      userAuthor: req.body.userInfo,
       recipe: req.params.id,
       comment: req.body.comment,
     });
   // Create comment for guest author
   } else {
     var newComment = await Comment.create({
-      guestAuthor: req.body.author,
+      guestAuthor: req.body.userInfo,
       recipe: req.params.id,
       comment: req.body.comment,
     });
