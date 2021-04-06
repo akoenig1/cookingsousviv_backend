@@ -3,7 +3,6 @@ import InstaPhoto from '../models/instaPhoto';
 import Recipe from '../models/recipe';
 import User from '../models/user';
 import asyncHandler from '../middlewares/asyncHandler';
-import e from 'express';
 
 // Display recipe create form on GET
 exports.getCreateRecipe = asyncHandler(async (req, res, next) => {
@@ -81,7 +80,11 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id)
     .populate({
       path: 'comments',
-      select: 'comment userAuthor guestAuthor',
+      select: 'comment guestAuthor',
+      populate: {
+        path: 'userAuthor',
+        select: 'name image',
+      }
     })
     .lean()
     .exec();
@@ -148,9 +151,6 @@ exports.toggleLike = asyncHandler(async (req, res, next) => {
 });
 
 exports.addComment = asyncHandler(async (req, res, next) => {
-  console.log(req.body.user);
-  console.log(req.params);
-  console.log(req.body.comment);
   const recipe = await Recipe.findById(req.params.id);
   const user = req.body.user
 
