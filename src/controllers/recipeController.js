@@ -3,6 +3,7 @@ import InstaPhoto from '../models/instaPhoto';
 import Recipe from '../models/recipe';
 import User from '../models/user';
 import asyncHandler from '../middlewares/asyncHandler';
+import checkAuth from '../middlewares/checkAuth';
 
 // Display recipe create form on GET
 exports.getCreateRecipe = asyncHandler(async (req, res, next) => {
@@ -97,7 +98,8 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
   }
 
   // Is there a logged in user?
-  if(req.userData) {
+  if(req.headers.authorization) {
+    checkAuth(req, res, next);
     // Did the logged in user like this recipe?
     const likes = recipe.likes.map((like) => like.toString());
     recipe.isLiked = likes.includes(req.userData.id);
@@ -106,17 +108,21 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
     recipe.comments.forEach((comment) => {
       comment.isCommentMine = false;
 
-      const userStr = comment.user._id.toString();
-      if(userStr === req.userData.id) {
-        comment.isCommentMine = true;
+      if(comment.userAuthor) {
+        const userStr = comment.userAuthor.toString();
+        if(userStr === req.userData.id) {
+          comment.isCommentMine = true;
+        }
       }
     });
   }
+  console.log(recipe)
 
   res.status(200).json({ success: true, data: recipe });
 })
 
 exports.toggleLike = asyncHandler(async (req, res, next) => {
+  console.log(req.userData.id)
   const recipe = await Recipe.findById(req.params.id);
 
   // Check that recipe exists
@@ -128,7 +134,7 @@ exports.toggleLike = asyncHandler(async (req, res, next) => {
   }
 
   // Check that a user is logged in
-  if(!userData) {
+  if(!req.userData.id) {
     return next({
       message: `You must be logged in to like a post`,
       statusCode: 404,
@@ -137,11 +143,13 @@ exports.toggleLike = asyncHandler(async (req, res, next) => {
 
   // Toggle like
   if(recipe.likes.includes(req.userData.id)) {
+    console.log(`Unliking for ${req.userData.id}`)
     const index = recipe.likes.indexOf(req.userData.id);
     recipe.likes.splice(index, 1);
     recipe.likesCount -= 1;
     await recipe.save();
   } else {
+    console.log(`Liking for ${req.userData.id}`)
     recipe.likes.push(req.userData.id);
     recipe.likesCount += 1;
     await recipe.save();
