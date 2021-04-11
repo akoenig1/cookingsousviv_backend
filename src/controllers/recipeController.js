@@ -103,20 +103,19 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
     // Did the logged in user like this recipe?
     const likes = recipe.likes.map((like) => like.toString());
     recipe.isLiked = likes.includes(req.userData.id);
-    
+
     // Did the logged in user comment on this recipe?
     recipe.comments.forEach((comment) => {
       comment.isCommentMine = false;
 
       if(comment.userAuthor) {
-        const userStr = comment.userAuthor.toString();
+        const userStr = comment.userAuthor._id.toString();
         if(userStr === req.userData.id) {
           comment.isCommentMine = true;
         }
       }
     });
   }
-  console.log(recipe)
 
   res.status(200).json({ success: true, data: recipe });
 })
@@ -219,7 +218,7 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
     });
   }
 
-  if(comment.user.toString !== req.user.id) {
+  if(comment.userAuthor._id.toString() !== req.userData.id) {
     return next({
       message: 'You are not authorized to delete this comment',
       statusCode: 401,
