@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors';
 import cron from 'node-cron';
 import updateInstaPhotos from './middlewares/updateInstaPhotos';
+import updateInstaToken from './utils/updateInstaToken';
 import routes from './routes';
 import { v4 as uuidv4 } from 'uuid'; //eslint-ignore-line no-unused-vars
 import path from 'path'; //eslint-ignore-line no-unused-vars
@@ -32,9 +33,9 @@ app.use((req, res, next) => {
 app.use(cors());
 
 // Custom middleware //
-// Check for new instagram photos every 15 minutes
+// Check for new instagram photos every hour
 app.use(function(req, res, next) {
-  cron.schedule('*/15 * * * *', async (req, res, next) => {
+  cron.schedule('*/60 * * * *', async (req, res, next) => {
     await updateInstaPhotos(req, res, next)
   })
   next();
@@ -44,6 +45,11 @@ app.use(function(req, res, next) {
 app.use('/auth', routes.auth);
 app.use('/instaPhotos', routes.instaPhotos);
 app.use('/recipes', routes.recipes);
+
+// Refresh long-lived Instagram User Access Token every week
+cron.schedule('0 0 * * 0', () => {
+  updateInstaToken() 
+})
 
 // Run server //
 app.listen(process.env.PORT, () => {

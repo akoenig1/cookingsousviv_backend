@@ -11,9 +11,6 @@
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel"
   },
-  "devDependencies": {
-    
-  },
   "dependencies": {
     "@babel/cli": "^7.12.10",
     "@babel/core": "^7.12.10",
