@@ -67,7 +67,7 @@ exports.updateRecipe = asyncHandler (async (req, res, next) => {
 
 // Display list of all recipes
 exports.getRecipes = asyncHandler (async (req, res, next) => {
-  await Recipe.find({}, 'title url intro ingredients directions instaPhoto tags')
+  await Recipe.find({}, 'title url intro ingredients directions instaPhoto tags createdAt')
   .populate('instaPhoto')
   .exec(function(err, list_recipes) {
     if(err) {return next(err)}
@@ -81,7 +81,7 @@ exports.getRecipe = asyncHandler (async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id)
     .populate({
       path: 'comments',
-      select: 'comment guestAuthor',
+      select: 'comment guestAuthor createdAt',
       populate: {
         path: 'userAuthor',
         select: 'name image',
